@@ -1,0 +1,513 @@
+/* ========================================
+   Leaderboard.css - ONGC Themed (Optimized)
+   ======================================== */
+
+/* -------------------------------
+   CSS Variables - ONGC Color Palette
+--------------------------------- */
+:root {
+  --ongc-maroon: #7A1414;
+  --ongc-green: #2D6A4F;
+  --ongc-yellow: #FFD43B;
+  --ongc-white: #F9F9F6;
+  --ongc-black: #1A1A1A;
+  --ongc-muted: #B5A27D;
+  --ongc-green-dark: #22543D;
+  --ongc-orange-rust: #B54828;
+  --ongc-soft-bg: #F3EFEA;
+  --ongc-hover-bg: #E9F2EF;
+}
+
+/* -------------------------------
+   Base Styling
+--------------------------------- */
+body {
+  font-family: "Inter", sans-serif;
+  background-color: var(--ongc-white);
+  color: var(--ongc-black);
+  margin: 15px;
+  padding: 0;
+  font-size: clamp(13px, 1.2vw, 16px);
+}
+
+:focus-visible {
+  outline-offset: 2px;
+}
+
+.leaderboard {
+  padding-top: 100px;
+}
+
+.leaderboard-container > div {
+  margin-bottom: 30px;
+}
+
+.ongc-logo {
+  display: block;
+  margin: 0 auto 20px;
+  width: 400px;
+  max-width: 90%;
+}
+
+/* -------------------------------
+   Table Styling
+--------------------------------- */
+.table-preview,
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: var(--ongc-white);
+  font-size: 14px;
+  text-align: center;
+}
+
+th, td {
+  border: 1px solid var(--ongc-muted);
+  white-space: nowrap;
+  padding: 10px 12px;
+}
+
+th {
+  background-color: var(--ongc-maroon);
+  color: var(--ongc-white);
+  font-weight: bold;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+td {
+  color: var(--ongc-black);
+  cursor: pointer;
+}
+
+tr:nth-child(even) { background-color: var(--ongc-white); }
+tr:nth-child(odd)  { background-color: var(--ongc-soft-bg); }
+
+td:first-child {
+  font-weight: bold;
+}
+
+thead tr:first-child th:first-child,
+thead tr:first-child td:first-child {
+  border-top-left-radius: 12px;
+}
+
+thead tr:first-child th:last-child,
+thead tr:first-child td:last-child {
+  border-top-right-radius: 12px;
+}
+
+tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 12px;
+}
+
+tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 12px;
+}
+
+.remarks-cell {
+  font-size: 13px;
+  text-align: left;
+  padding: 12px;
+  max-width: 300px;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+/* -------------------------------
+   Pagination
+--------------------------------- */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0 60px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pagination button {
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.PButtons {
+  background-color: var(--ongc-hover-bg);
+  color: var(--ongc-black);
+}
+
+.PNpage,
+.active-page {
+  color: var(--ongc-white);
+  font-weight: bold;
+}
+
+.PNpage {
+  background-color: var(--ongc-green-dark);
+}
+
+.active-page {
+  background-color: var(--ongc-green);
+  box-shadow: 0 0 0 3px var(--ongc-yellow);
+}
+
+.pagination button:disabled {
+  background-color: #e0e0e0;
+  color: #999;
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.ellipsis {
+  padding: 10px;
+  font-weight: bold;
+  color: var(--ongc-muted);
+}
+
+.PButtons:hover,
+.PNpage:hover,
+.active-page:hover,
+.filter-btn:hover,
+.export-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+/* -------------------------------
+   Filter + Export Panel
+--------------------------------- */
+/* --- Filter Panel Layout --- */
+.filter-panel-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px 24px;
+  margin-bottom: 12px; /* ↓ Changed from 30px to 12px */
+  border-radius: 12px;
+  background-color: var(--ongc-white);
+}
+
+/* --- Export Panel Layout (with shadow) --- */
+.export-panel-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px 24px;
+  margin-top: 0;        /* ← Added to eliminate extra vertical gap */
+  margin-bottom: 30px;
+  border-radius: 12px;
+  background-color: var(--ongc-white);
+  box-shadow: 0 2px 4px rgba(42, 106, 79, 0.05);
+}
+
+/* --- Common Groups --- */
+.filter-input-group,
+.export-btn-group,
+.field-selection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0px; /* ↓ Reduced from 20px to 10px */
+}
+
+
+/* --- Input Fields --- */
+.filter-input,
+.filename-input {
+  padding: 10px 14px;
+  border: 1.5px solid var(--ongc-green);
+  border-radius: 12px;
+  font-size: 14px;
+  transition: 0.3s ease;
+  min-width: 200px;
+}
+
+.filter-input:focus,
+.filename-input:focus {
+  border-color: var(--ongc-green-dark);
+  box-shadow: 0 0 0 1px var(--ongc-green-dark);
+}
+
+/* --- Filename Input Group --- */
+.filename-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filename-label {
+  font-weight: 600;
+  color: var(--ongc-black);
+  white-space: nowrap;
+}
+
+/* --- Buttons --- */
+.filter-btn,
+.export-btn,
+.toggle-select-btn {
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: 0.25s ease-in-out;
+  min-width: 100px;
+  text-align: center;
+   color: var(--ongc-white);
+}
+
+/* --- Filter Button Variants --- */
+.filter-btn.apply,
+.filter-btn.clear {
+  background-color: var(--ongc-maroon);
+  color: var(--ongc-white);
+}
+
+/* --- Export Button Variants --- */
+.export-btn.csv    { background-color: var(--ongc-green); }
+.export-btn.excel  { background-color: #28a745; }
+.export-btn.pdf    { background-color: var(--ongc-maroon); }
+.export-btn.word   { background-color: var(--ongc-orange-rust); }
+.export-btn.all    { background-color: var(--ongc-black); }
+.export-btn.preview{ background-color: #6c757d; }
+
+/* -------------------------------
+   Export Heading
+--------------------------------- */
+
+.export-heading {
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 1.6rem;
+  background: linear-gradient(
+    90deg,
+    var(--ongc-maroon),
+    var(--ongc-green),
+    var(--ongc-yellow)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: 1.2px;
+  margin-bottom: 20px;
+}
+
+
+/* -------------------------------
+   Field Selection Checkboxes
+--------------------------------- */
+.field-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.9rem;
+  background-color: var(--ongc-soft-bg);
+  padding: 8px 12px;
+  border: 1px solid var(--ongc-green);
+  border-radius: 6px;
+  color: var(--ongc-black);
+}
+
+.field-checkbox input[type="checkbox"] {
+  margin-right: 6px;
+  transform: scale(1.1);
+  accent-color: var(--ongc-green);
+}
+
+/* -------------------------------
+   Select Toggle Button States
+--------------------------------- */
+.select-toggle-btn,
+.toggle-select-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--ongc-green);
+  background-color: var(--ongc-soft-bg);
+  color: var(--ongc-black);
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Deselect All Button Appearance */
+.deselect-state {
+  background-color: #6c757d;
+  color: #ffffff;
+  border: 1px solid #6c757d;
+}
+
+.deselect-state:hover {
+  background-color: #5a6268;
+}
+
+/* Select All Button Appearance */
+.select-state {
+  background-color: #7a1414; /* ONGC Maroon */
+  color: #fff;
+  border: 1px solid #7a1414;
+}
+
+.select-state:hover {
+  background-color: #5c1010;
+}
+
+
+
+/* -------------------------------
+   Preview Section
+--------------------------------- */
+.preview-section {
+  margin: 30px 0 24px;
+  padding: 20px 24px;
+  border-radius: 12px;
+  background-color: var(--ongc-white);
+  border: 1px solid var(--ongc-green-dark);
+  box-shadow: 0 0 6px rgba(42, 106, 79, 0.1);
+}
+
+.preview-section h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: var(--ongc-green);
+  text-align: center;
+}
+
+.preview-note {
+  font-size: 0.75rem;
+  color: gray;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* -------------------------------
+   Responsive Design
+--------------------------------- */
+@media (max-width: 600px) {
+  .leaderboard { padding-top: 60px; }
+  .ongc-logo { width: 220px; }
+
+  .filter-panel-row,
+  .export-panel-row,
+  .filter-input-group,
+  .export-btn-group,
+  .field-selection {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-input,
+  .filter-btn,
+  .export-btn,
+  .filename-input {
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box;
+  }
+
+  .filename-input {
+    height: 40px;
+    padding: 10px 12px;
+    border-radius: 10px;
+  }
+
+  .filename-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pagination {
+    margin: 30px 0 40px;
+    gap: 6px;
+  }
+
+  .pagination button {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+
+  .table-preview table {
+    min-width: 600px;
+  }
+
+  .preview-section h3 { font-size: 16px; }
+  .table-preview table th,
+  .table-preview table td {
+    font-size: 12px;
+    padding: 6px;
+  }
+
+  .remarks-cell {
+    font-size: 12px;
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 900px) {
+  .filter-input,
+  .filename-input {
+    min-width: 160px;
+  }
+
+  .pagination button {
+    padding: 9px 16px;
+    font-size: 13px;
+  }
+
+  .ongc-logo { width: 320px; }
+
+  .preview-section h3 { font-size: 17px; }
+}
+
+/* -------------------------------
+   Print-Friendly
+--------------------------------- */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+
+  .pagination,
+  .filter-panel-row,
+  .export-panel-row,
+  .preview-section p,
+  .export-btn-group {
+    display: none !important;
+  }
+
+  .table-preview table {
+    font-size: 12px;
+    border: 1px solid black;
+  }
+
+  .table-preview table th,
+  .table-preview table td {
+    border-color: #333;
+    color: black;
+  }
+}
