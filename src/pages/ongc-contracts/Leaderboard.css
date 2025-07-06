@@ -50,7 +50,7 @@ body {
 }
 
 /* -------------------------------
-   Table Styling
+   Table Preview and General Table Styling
 --------------------------------- */
 .table-preview,
 table {
@@ -62,6 +62,12 @@ table {
   background-color: var(--ongc-white);
   font-size: 14px;
   text-align: center;
+}
+
+.table-wrapper {
+  max-width: 100%;
+  overflow-x: auto;  /* Enables horizontal scrolling */
+  -webkit-overflow-scrolling: touch;  /* For smooth scrolling on mobile */
 }
 
 th, td {
@@ -83,13 +89,21 @@ td {
   cursor: pointer;
 }
 
-tr:nth-child(even) { background-color: var(--ongc-white); }
-tr:nth-child(odd)  { background-color: var(--ongc-soft-bg); }
+tr:nth-child(even) { 
+  background-color: var(--ongc-white); 
+}
+
+tr:nth-child(odd)  { 
+  background-color: var(--ongc-soft-bg); 
+}
 
 td:first-child {
   font-weight: bold;
 }
 
+/* -------------------------------
+   Table Cell Borders - Rounded Corners
+--------------------------------- */
 thead tr:first-child th:first-child,
 thead tr:first-child td:first-child {
   border-top-left-radius: 12px;
@@ -108,6 +122,9 @@ tbody tr:last-child td:last-child {
   border-bottom-right-radius: 12px;
 }
 
+/* -------------------------------
+   Remarks Cell Styling
+--------------------------------- */
 .remarks-cell {
   font-size: 13px;
   text-align: left;
@@ -115,6 +132,19 @@ tbody tr:last-child td:last-child {
   max-width: 300px;
   overflow-wrap: break-word;
   white-space: normal;
+}
+
+/* -------------------------------
+   Responsive Table Scrolling
+--------------------------------- */
+@media (max-width: 600px) {
+  .table-wrapper {
+    overflow-x: auto;
+  }
+  
+  table {
+    min-width: 600px;  /* Ensures the table has a consistent width on smaller screens */
+  }
 }
 
 /* -------------------------------
@@ -183,9 +213,11 @@ tbody tr:last-child td:last-child {
   transform: translateY(-2px);
   opacity: 0.9;
 }
+
 /* -------------------------------
-   Filter + Export Panel
+   Filter + Export Panel - Responsive Layouts
 --------------------------------- */
+
 /* --- Filter Panel Layout --- */
 .filter-panel-row {
   display: flex;
@@ -194,7 +226,7 @@ tbody tr:last-child td:last-child {
   align-items: flex-start;
   gap: 20px;
   padding: 20px 24px;
-  margin-bottom: 12px; /* ↓ Changed from 30px to 12px */
+  margin-bottom: 12px; 
   border-radius: 12px;
   background-color: var(--ongc-white);
 }
@@ -207,7 +239,7 @@ tbody tr:last-child td:last-child {
   align-items: flex-start;
   gap: 20px;
   padding: 20px 24px;
-  margin-top: 0;        /* ← Added to eliminate extra vertical gap */
+  margin-top: 0;
   margin-bottom: 30px;
   border-radius: 12px;
   background-color: var(--ongc-white);
@@ -223,9 +255,8 @@ tbody tr:last-child td:last-child {
   gap: 12px;
   justify-content: center;
   align-items: center;
-  margin-bottom: 0px; /* ↓ Reduced from 20px to 10px */
+  margin-bottom: 0px; 
 }
-
 
 /* --- Input Fields --- */
 .filter-input,
@@ -270,7 +301,7 @@ tbody tr:last-child td:last-child {
   transition: 0.25s ease-in-out;
   min-width: 100px;
   text-align: center;
-   color: var(--ongc-white);
+  color: var(--ongc-white);
 }
 
 /* --- Filter Button Variants --- */
@@ -289,9 +320,91 @@ tbody tr:last-child td:last-child {
 .export-btn.preview{ background-color: #6c757d; }
 
 /* -------------------------------
-   Export Heading
+   Responsive Design for Mobile Devices
 --------------------------------- */
+@media (max-width: 600px) {
+  /* Filter Section */
+  .filter-panel-row {
+    flex-direction: column;  /* Stack the filter panel vertically */
+    align-items: stretch; /* Ensure it stretches the whole width */
+  }
 
+  /* Apply and Clear Buttons */
+  .filter-btn.apply,
+  .filter-btn.clear {
+    width: 48%;
+    margin-bottom: 10px;
+  }
+
+  /* File Name Input Group */
+  .filename-group {
+    width: 100%;
+    gap: 0;
+  }
+
+  .filename-input {
+    width: 100%;
+  }
+
+  /* Export and Show/Hide buttons - 3 rows with 2 buttons each */
+  .export-btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+  }
+
+  .export-btn-group button {
+    width: 48%; /* Two buttons per row */
+    margin-bottom: 10px;
+  }
+
+  /* Ensure the last button does not have a margin */
+  .export-btn-group button:last-child {
+    margin-right: 0;
+  }
+
+  /* Table Wrapper */
+  .table-wrapper {
+    overflow-x: auto;
+  }
+
+  /* Table should be 100% of width on mobile */
+  table {
+    min-width: 600px;
+  }
+}
+
+/* -------------------------------
+   Responsive Design for Tablets (601px - 900px)
+--------------------------------- */
+@media (min-width: 601px) and (max-width: 900px) {
+  /* File Name Input Group for tablet */
+  .filename-group {
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+  }
+
+  /* Export Buttons (two per row) for tablet */
+  .export-btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+  }
+
+  .export-btn-group button {
+    width: 48%;
+  }
+
+  .export-btn-group button:last-child {
+    margin-right: 0;
+  }
+}
+
+
+/* Export Heading */
 .export-heading {
   font-family: 'Poppins', sans-serif;
   text-align: center;
@@ -312,10 +425,22 @@ tbody tr:last-child td:last-child {
   margin-bottom: 20px;
 }
 
+/* Field Selection Container */
+.field-selection-container {
+  margin: 20px 0;
+  text-align: center;
+}
 
-/* -------------------------------
-   Field Selection Checkboxes
---------------------------------- */
+/* Field Selection */
+.field-selection {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+/* Field Checkbox */
 .field-checkbox {
   display: flex;
   align-items: center;
@@ -334,9 +459,7 @@ tbody tr:last-child td:last-child {
   accent-color: var(--ongc-green);
 }
 
-/* -------------------------------
-   Select Toggle Button States
---------------------------------- */
+/* Select Toggle Button States */
 .select-toggle-btn,
 .toggle-select-btn {
   display: flex;
@@ -366,20 +489,16 @@ tbody tr:last-child td:last-child {
 
 /* Select All Button Appearance */
 .select-state {
-  background-color: #7a1414; /* ONGC Maroon */
+  background-color: var(--ongc-green-dark); 
   color: #fff;
   border: 1px solid #7a1414;
 }
 
 .select-state:hover {
-  background-color: #5c1010;
+  background-color: var(--ongc-green);
 }
 
-
-
-/* -------------------------------
-   Preview Section
---------------------------------- */
+/* Preview Section */
 .preview-section {
   margin: 30px 0 24px;
   padding: 20px 24px;
@@ -404,9 +523,73 @@ tbody tr:last-child td:last-child {
   text-align: center;
 }
 
+/* Horizontal Scroll for Preview Table */
+.table-preview-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.preview-table {
+  width: 100%;
+  min-width: 800px;
+  border-collapse: collapse;
+}
+
+.preview-table th,
+.preview-table td {
+  padding: 8px;
+  border: 1px solid var(--ongc-muted);
+  text-align: center;
+}
+
+.preview-table th {
+  background-color: var(--ongc-maroon);
+  color: white;
+}
+
+/* Hide preview section when not visible */
+.preview-section.hidden,
+.field-selection-container.hidden {
+  display: none;
+}
+
 /* -------------------------------
    Responsive Design
 --------------------------------- */
+@media (max-width: 600px) {
+  .field-selection {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .field-checkbox {
+    font-size: 0.8rem;
+    padding: 6px 10px;
+  }
+
+  .select-toggle-btn {
+    font-size: 0.8rem;
+    padding: 6px 10px;
+  }
+
+  .preview-section {
+    margin-top: 20px;
+    padding: 16px 20px;
+  }
+
+  .preview-table {
+    min-width: 600px;
+  }
+
+  .preview-table th,
+  .preview-table td {
+    font-size: 0.8rem;
+    padding: 6px;
+  }
+}
+
+/* Responsive Design for smaller devices */
 @media (max-width: 600px) {
   .leaderboard { padding-top: 60px; }
   .ongc-logo { width: 220px; }
@@ -481,33 +664,4 @@ tbody tr:last-child td:last-child {
   .ongc-logo { width: 320px; }
 
   .preview-section h3 { font-size: 17px; }
-}
-
-/* -------------------------------
-   Print-Friendly
---------------------------------- */
-@media print {
-  body {
-    background: white;
-    color: black;
-  }
-
-  .pagination,
-  .filter-panel-row,
-  .export-panel-row,
-  .preview-section p,
-  .export-btn-group {
-    display: none !important;
-  }
-
-  .table-preview table {
-    font-size: 12px;
-    border: 1px solid black;
-  }
-
-  .table-preview table th,
-  .table-preview table td {
-    border-color: #333;
-    color: black;
-  }
 }

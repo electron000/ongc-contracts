@@ -1,6 +1,8 @@
+import React from 'react';
+
 const DataTable = ({ data, headers }) => {
   return (
-    <div className="overflow-auto my-4">
+    <div className="table-wrapper overflow-x-auto my-4">
       <table className="min-w-full table-auto border-collapse border border-gray-200">
         <thead className="bg-gray-100">
           <tr>

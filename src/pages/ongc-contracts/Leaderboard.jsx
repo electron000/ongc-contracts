@@ -1,13 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react'; 
 import './Leaderboard.css';
 import ongcLogo from '../../assets/ongc-logo.png';
 
-import {
-  FilterPanel,
-  DataTable,
-  ExportButtons,
-  Pagination,
-} from "../../components";
+import { FilterPanel, DataTable, ExportButtons, Pagination, } from "../../components";  
 
 const fieldTypes = {
   range: [
@@ -125,15 +120,13 @@ const Leaderboard = () => {
 
     if (filterField) {
       if (fieldTypes.range.includes(filterField)) {
-  const [min, max] = rangeValues;
-
-  filtered = filtered.filter(row => {
-    const val = parseFloat(row[filterField]) || 0;
-    const isMinValid = min !== "" ? val >= parseFloat(min) : true;
-    const isMaxValid = max !== "" ? val <= parseFloat(max) : true;
-    return isMinValid && isMaxValid;
-  });
-
+        const [min, max] = rangeValues;
+        filtered = filtered.filter(row => {
+          const val = parseFloat(row[filterField]) || 0;
+          const isMinValid = min !== "" ? val >= parseFloat(min) : true;
+          const isMaxValid = max !== "" ? val <= parseFloat(max) : true;
+          return isMinValid && isMaxValid;
+        });
       } else if (fieldTypes.date.includes(filterField)) {
         const from = new Date(dateRange.from);
         const to = new Date(dateRange.to);
@@ -179,36 +172,37 @@ const Leaderboard = () => {
     <div className="leaderboard-container">
       <img src={ongcLogo} alt="ONGC Logo" className="ongc-logo" />
 
-{!showPreview && (
-  <div style={{ marginBottom: "10px" }}> {/* Reduced spacing below filter panel */}
-    <FilterPanel
-      headers={headers}
-      fieldTypes={fieldTypes}
-      filterField={filterField}
-      setFilterField={setFilterField}
-      filterValue={filterValue}
-      setFilterValue={setFilterValue}
-      rangeValues={rangeValues}
-      setRangeValues={setRangeValues}
-      dateRange={dateRange}
-      setDateRange={setDateRange}
-      onApply={handleFilterApply}
-      onClear={handleClearFilters}
-    />
-  </div>
-)}
+      {!showPreview && (
+        <div style={{ marginBottom: "10px" }}>
+          {/* Filter Panel */}
+          <FilterPanel
+            headers={headers}
+            fieldTypes={fieldTypes}
+            filterField={filterField}
+            setFilterField={setFilterField}
+            filterValue={filterValue}
+            setFilterValue={setFilterValue}
+            rangeValues={rangeValues}
+            setRangeValues={setRangeValues}
+            dateRange={dateRange}
+            setDateRange={setDateRange}
+            onApply={handleFilterApply}
+            onClear={handleClearFilters}
+          />
+        </div>
+      )}
 
-<div style={{ marginTop: "0px", marginBottom: "24px" }}> {/* Brings filter/export closer */}
-  <ExportButtons
-    data={currentData}
-    headers={headers}
-    showPreview={showPreview}
-    setShowPreview={setShowPreview}
-  />
-</div>
+      {/* Export Buttons */}
+      <div className="export-fields-container" style={{ marginBottom: "24px" }}>
+        <ExportButtons
+          data={currentData}
+          headers={headers}
+          showPreview={showPreview}
+          setShowPreview={setShowPreview}
+        />
+      </div>
 
-
-
+      {/* Data Table and Pagination */}
       {!showPreview && <DataTable data={paginatedData} headers={headers} />}
       {!showPreview && (
         <Pagination

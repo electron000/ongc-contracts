@@ -183,97 +183,98 @@ const ExportButtons = ({ data, headers, showPreview, setShowPreview }) => {
     await exportToDocx();
   };
 
-  return (
-    <div>
-      <div className="export-panel-row">
-        <div className="filename-group">
-          <label htmlFor="filename" className="font-semibold mr-2">File Name:</label>
-          <input
-            id="filename"
-            type="text"
-            value={fileName}
-            onChange={(e) => setFileName(e.target.value)}
-            className="filename-input"
-            placeholder="Enter file name"
-          />
+return (
+  <div>
+    <div className="export-panel-row">
+      <div className="filename-group">
+        <label htmlFor="filename" className="font-semibold mr-2">File Name:</label>
+        <input
+          id="filename"
+          type="text"
+          value={fileName}
+          onChange={(e) => setFileName(e.target.value)}
+          className="filename-input"
+          placeholder="Enter file name"
+        />
+      </div>
+
+      <div className="export-btn-group">
+        <button onClick={exportToCSV} className="export-btn csv">Export CSV</button>
+        <button onClick={exportToExcel} className="export-btn excel">Export Excel</button>
+        <button onClick={exportToPDF} className="export-btn pdf">Export PDF</button>
+        <button onClick={exportToDocx} className="export-btn word">Export Word</button>
+        <button onClick={exportAllFormats} className="export-btn all">Export All Formats</button>
+        <button onClick={() => setShowPreview(!showPreview)} className="export-btn preview">
+          {showPreview ? "Hide Preview" : "Show Preview"}
+        </button>
+      </div>
+    </div>
+
+    {/* Show the "CHOOSE FIELDS TO EXPORT" heading and the field selection toggle inside preview toggle */}
+    {showPreview && (
+      <div className="field-selection-container">
+        <div className="export-heading-container">
+          <h3 className="export-heading">CHOOSE FIELDS TO EXPORT</h3>
         </div>
 
-        <div className="export-btn-group">
-          <button onClick={exportToCSV} className="export-btn csv">Export CSV</button>
-          <button onClick={exportToExcel} className="export-btn excel">Export Excel</button>
-          <button onClick={exportToPDF} className="export-btn pdf">Export PDF</button>
-          <button onClick={exportToDocx} className="export-btn word">Export Word</button>
-          <button onClick={exportAllFormats} className="export-btn all">Export All Formats</button>
-          <button onClick={() => setShowPreview(!showPreview)} className="export-btn preview">
-            {showPreview ? "Hide Preview" : "Show Preview"}
+        {/* Field Selection */}
+        <div className="field-selection">
+          {headers.map((field) => (
+            <label key={field} className="field-checkbox">
+              <input
+                type="checkbox"
+                checked={selectedFields.includes(field)}
+                onChange={() => handleFieldChange(field)}
+              />
+              {field}
+            </label>
+          ))}
+          <button
+            onClick={toggleAllFields}
+            className={`toggle-select-btn ${selectedFields.length === headers.length ? "deselect-state" : "select-state"}`}
+          >
+            {selectedFields.length === headers.length ? "Deselect All" : "Select All"}
           </button>
         </div>
       </div>
+    )}
 
+    {/* Preview Section */}
+{/* Preview Section */}
 {showPreview && (
-  <>
-    <div className="export-heading-container">
-      <h3 className="export-heading">CHOOSE FIELDS TO EXPORT</h3>
-    </div>
-
-    <div className="preview-section">
-      <div className="field-selection">
-    
-        {headers.map(field => (
-          <label key={field} className="field-checkbox">
-            <input
-              type="checkbox"
-              checked={selectedFields.includes(field)}
-              onChange={() => handleFieldChange(field)}
-            />
-            {field}
-          </label>
-        ))}
-        <button
-  onClick={toggleAllFields}
-  className={`toggle-select-btn ${
-    selectedFields.length === headers.length ? "deselect-state" : "select-state"
-  }`}
->
-  {selectedFields.length === headers.length ? "Deselect All" : "Select All"}
-</button>
-
-      </div>
-
-      <div className="table-preview">
-        <table className="preview-table">
-          <thead>
-            <tr>
-              {selectedFields.map(field => (
-                <th
-                  key={field}
-                  onClick={() => toggleSort(field)}
-                  className="table-header-cell"
-                >
-                  {field} {sortConfig.field === field ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
-                </th>
+  <div className="preview-section">
+    <div className="table-preview-container">
+      <table className="preview-table">
+        <thead>
+          <tr>
+            {selectedFields.map((field) => (
+              <th key={field} onClick={() => toggleSort(field)} className="table-header-cell">
+                {field} {sortConfig.field === field ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {getSortedData().slice(0, 10).map((row, index) => (
+            <tr key={index}>
+              {selectedFields.map((field) => (
+                <td key={field} className="table-cell">
+                  {row[field]}
+                </td>
               ))}
             </tr>
-          </thead>
-          <tbody>
-            {getSortedData().slice(0, 10).map((row, index) => (
-              <tr key={index}>
-                {selectedFields.map(field => (
-                  <td key={field} className="table-cell">
-                    {row[field]}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <p className="preview-note">* Preview limited to first 10 rows</p>
-      </div>
+          ))}
+        </tbody>
+      </table>
+      <p className="preview-note">* Preview limited to first 10 rows</p>
     </div>
-  </>
+  </div>
 )}
-    </div>
-  );
+
+  </div>
+);
+
+
 };
 
 export default ExportButtons;
