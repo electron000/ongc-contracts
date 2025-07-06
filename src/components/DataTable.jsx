@@ -1,6 +1,14 @@
 import React from 'react';
 
 const DataTable = ({ data, headers }) => {
+
+  // Function to format date in yyyy-mm-dd format
+  const formatDate = (date) => {
+    if (!date) return "-"; // If the date is invalid, return "-"
+    const d = new Date(date);
+    return d.toLocaleDateString('en-CA'); // 'en-CA' gives yyyy-mm-dd format
+  };
+
   return (
     <div className="table-wrapper overflow-x-auto my-4">
       <table className="min-w-full table-auto border-collapse border border-gray-200">
@@ -26,8 +34,8 @@ const DataTable = ({ data, headers }) => {
                 {headers.map((h) => (
                   <td key={h} className="border px-4 py-2 text-sm">
                     {typeof row[h] === 'number'
-                      ? row[h].toLocaleString()
-                      : row[h] || "-"}
+                      ? row[h].toLocaleString() // For number formatting
+                      : (h.includes("Date") ? formatDate(row[h]) : (row[h] || "-"))} {/* Format date columns */}
                   </td>
                 ))}
               </tr>

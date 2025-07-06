@@ -33,7 +33,8 @@ const FilterPanel = ({
   const renderInput = () => {
     if (!filterField) return null;
 
-    if (fieldTypes.range.includes(filterField)) {
+    // Numeric Range for Sl No and other money fields
+    if (fieldTypes.range.includes(filterField) || fieldTypes.number.includes(filterField)) {
       return (
         <>
           <input
@@ -65,6 +66,7 @@ const FilterPanel = ({
       );
     }
 
+    // Date Range with Native Date Picker
     if (fieldTypes.date.includes(filterField)) {
       return (
         <>
@@ -74,17 +76,20 @@ const FilterPanel = ({
             value={dateRange.from}
             onChange={(e) => setDateRange({ ...dateRange, from: e.target.value })}
             className="filter-input"
+            placeholder="From (yyyy-mm-dd)"
           />
           <input
             type="date"
             value={dateRange.to}
             onChange={(e) => setDateRange({ ...dateRange, to: e.target.value })}
             className="filter-input"
+            placeholder="To (yyyy-mm-dd)"
           />
         </>
       );
     }
 
+    // Yes/No Dropdown
     if (fieldTypes.yesNo.includes(filterField)) {
       return (
         <select
@@ -100,21 +105,35 @@ const FilterPanel = ({
       );
     }
 
+    // Year Range for Warranty and AMC duration
     if (fieldTypes.yearDropdown.includes(filterField)) {
       return (
-        <input
-          ref={inputRef}
-          type="number"
-          min={1}
-          max={10}
-          value={filterValue}
-          onChange={(e) => setFilterValue(e.target.value)}
-          placeholder="Years"
-          className="filter-input"
-        />
+        <>
+          <input
+            ref={inputRef}
+            type="number"
+            min={1}
+            max={100}
+            value={rangeValues[0] || ""}
+            onChange={(e) => setRangeValues([e.target.value, rangeValues[1]])}
+            placeholder="Start Year"
+            className="filter-input"
+          />
+          <input
+            ref={inputRef}
+            type="number"
+            min={1}
+            max={100}
+            value={rangeValues[1] || ""}
+            onChange={(e) => setRangeValues([rangeValues[0], e.target.value])}
+            placeholder="End Year"
+            className="filter-input"
+          />
+        </>
       );
     }
 
+    // General Text Input
     return (
       <input
         ref={inputRef}
@@ -144,9 +163,12 @@ const FilterPanel = ({
       </div>
 
       <div className="filter-input-group">
-        <button onClick={onApply} className="filter-btn apply">Apply</button>
-        <button onClick={handleClearInput} className="filter-btn clear">Clear</button>
-      </div>
+  <button onClick={onApply} className="filter-btn apply">Apply</button>
+  <button onClick={() => {
+    handleClearInput(); // clear field inputs
+    onClear();          // notify parent to reset the data
+  }} className="filter-btn clear">Clear</button>
+</div>
     </div>
   );
 };

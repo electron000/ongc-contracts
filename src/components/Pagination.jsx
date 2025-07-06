@@ -1,6 +1,6 @@
 import React from "react";
 
-const Pagination = ({ currentPage, setPage, totalPages }) => {
+const Pagination = ({ currentPage, setPage, totalPages, rowsPerPage, currentData }) => {
   const goToPage = (page) => {
     if (page >= 1 && page <= totalPages) {
       setPage(page);
