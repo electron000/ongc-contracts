@@ -1,12 +1,12 @@
 /* ========================================
    Leaderboard.css - ONGC Themed (Optimized)
-   ======================================== */
+=========================================== */
 
 /* -------------------------------
    CSS Variables - ONGC Color Palette
 --------------------------------- */
 :root {
-  --ongc-maroon: #7A1414;
+  --ongc-maroon: #9B1C1C;
   --ongc-green: #2D6A4F;
   --ongc-yellow: #FFD43B;
   --ongc-white: #F9F9F6;
@@ -19,27 +19,28 @@
 }
 
 /* -------------------------------
-   Base Styling
+   Global Reset + Base
 --------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
   font-family: "Inter", sans-serif;
   background-color: var(--ongc-white);
   color: var(--ongc-black);
   margin: 15px;
-  padding: 0;
   font-size: clamp(13px, 1.2vw, 16px);
 }
 
-:focus-visible {
-  outline-offset: 2px;
-}
 
+/* -------------------------------
+   Layout & Logo
+--------------------------------- */
 .leaderboard {
   padding-top: 100px;
-}
-
-.leaderboard-container > div {
-  margin-bottom: 30px;
 }
 
 .ongc-logo {
@@ -50,24 +51,58 @@ body {
 }
 
 /* -------------------------------
-   Table Preview and General Table Styling
+   Cursor Controls
 --------------------------------- */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+  cursor: text;
+}
+
+button,
+.filter-btn,
+.export-btn,
+.toggle-select-btn,
+.select-toggle-btn,
+.field-checkbox,
+.preview-table th,
+th {
+  cursor: pointer;
+}
+
+td {
+  cursor: default;
+}
+
+td.clickable,
+td[data-clickable="true"] {
+  cursor: pointer;
+}
+
+/* -------------------------------
+   Table Styling
+--------------------------------- */
+.table-wrapper {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 10px;
+}
+
 .table-preview,
+.preview-table,
 table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   border-radius: 12px;
-  overflow: hidden;
   background-color: var(--ongc-white);
   font-size: 14px;
   text-align: center;
-}
-
-.table-wrapper {
-  max-width: 100%;
-  overflow-x: auto;  /* Enables horizontal scrolling */
-  -webkit-overflow-scrolling: touch;  /* For smooth scrolling on mobile */
+  min-width: 600px;
 }
 
 th, td {
@@ -81,29 +116,19 @@ th {
   color: var(--ongc-white);
   font-weight: bold;
   text-transform: uppercase;
-  line-height: 1.4;
 }
 
 td {
   color: var(--ongc-black);
-  cursor: pointer;
 }
 
-tr:nth-child(even) { 
-  background-color: var(--ongc-white); 
-}
-
-tr:nth-child(odd)  { 
-  background-color: var(--ongc-soft-bg); 
-}
+tr:nth-child(even) { background-color: var(--ongc-white); }
+tr:nth-child(odd)  { background-color: var(--ongc-soft-bg); }
 
 td:first-child {
   font-weight: bold;
 }
 
-/* -------------------------------
-   Table Cell Borders - Rounded Corners
---------------------------------- */
 thead tr:first-child th:first-child,
 thead tr:first-child td:first-child {
   border-top-left-radius: 12px;
@@ -122,30 +147,19 @@ tbody tr:last-child td:last-child {
   border-bottom-right-radius: 12px;
 }
 
-/* -------------------------------
-   Remarks Cell Styling
---------------------------------- */
-.remarks-cell {
-  font-size: 13px;
-  text-align: left;
-  padding: 12px;
-  max-width: 300px;
+.remarks-column {
+  max-width: 300px; /* or any fixed width you prefer */
+  width: 300px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
   overflow-wrap: break-word;
-  white-space: normal;
+  border: 1px solid var(--ongc-muted); /* matches Tailwind's border-gray-200 */
+  padding: 0.5rem 1rem; /* equivalent to px-4 py-2 */
+  font-size: 0.750rem; /* text-sm */
+  text-align: left;
+  vertical-align: top;
 }
 
-/* -------------------------------
-   Responsive Table Scrolling
---------------------------------- */
-@media (max-width: 600px) {
-  .table-wrapper {
-    overflow-x: auto;
-  }
-  
-  table {
-    min-width: 600px;  /* Ensures the table has a consistent width on smaller screens */
-  }
-}
 
 /* -------------------------------
    Pagination
@@ -180,14 +194,10 @@ tbody tr:last-child td:last-child {
 .active-page {
   color: var(--ongc-white);
   font-weight: bold;
-}
-
-.PNpage {
-  background-color: var(--ongc-green-dark);
+  background-color: var(--ongc-maroon);
 }
 
 .active-page {
-  background-color: var(--ongc-green);
   box-shadow: 0 0 0 3px var(--ongc-yellow);
 }
 
@@ -210,28 +220,26 @@ tbody tr:last-child td:last-child {
 .active-page:hover,
 .filter-btn:hover,
 .export-btn:hover {
-  transform: translateY(-2px);
-  opacity: 0.9;
+  opacity: 0.95;
 }
+
+.PButtons:active,
+.PNpage:active,
+.active-page:active,
+.filter-btn:active,
+.export-btn:active {
+  transform: scale(0.96);
+  transition: transform 0.1s ease-in-out;
+}
+
+
+
+
 
 /* -------------------------------
-   Filter + Export Panel - Responsive Layouts
+   Filter & Export Panel
 --------------------------------- */
-
-/* --- Filter Panel Layout --- */
-.filter-panel-row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 20px;
-  padding: 20px 24px;
-  margin-bottom: 12px; 
-  border-radius: 12px;
-  background-color: var(--ongc-white);
-}
-
-/* --- Export Panel Layout (with shadow) --- */
+.filter-panel-row,
 .export-panel-row {
   display: flex;
   flex-wrap: wrap;
@@ -239,14 +247,16 @@ tbody tr:last-child td:last-child {
   align-items: flex-start;
   gap: 20px;
   padding: 20px 24px;
-  margin-top: 0;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   border-radius: 12px;
   background-color: var(--ongc-white);
+}
+
+.export-panel-row {
   box-shadow: 0 2px 4px rgba(42, 106, 79, 0.05);
 }
 
-/* --- Common Groups --- */
+/* Filter/Export Groups */
 .filter-input-group,
 .export-btn-group,
 .field-selection {
@@ -255,27 +265,33 @@ tbody tr:last-child td:last-child {
   gap: 12px;
   justify-content: center;
   align-items: center;
-  margin-bottom: 0px; 
+  overflow-x: auto;
+  padding-bottom: 10px;
 }
 
-/* --- Input Fields --- */
+/* Inputs */
 .filter-input,
 .filename-input {
   padding: 10px 14px;
   border: 1.5px solid var(--ongc-green);
   border-radius: 12px;
   font-size: 14px;
-  transition: 0.3s ease;
   min-width: 200px;
 }
 
+/* Remove default dotted outlines and apply consistent focus styling */
+input:focus,
+select:focus,
+textarea:focus,
+button:focus,
 .filter-input:focus,
 .filename-input:focus {
-  border-color: var(--ongc-green-dark);
-  box-shadow: 0 0 0 1px var(--ongc-green-dark);
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: var(--ongc-green-dark) !important;
 }
 
-/* --- Filename Input Group --- */
+/* Filename Group */
 .filename-group {
   display: flex;
   align-items: center;
@@ -289,7 +305,8 @@ tbody tr:last-child td:last-child {
   white-space: nowrap;
 }
 
-/* --- Buttons --- */
+
+/* Buttons */
 .filter-btn,
 .export-btn,
 .toggle-select-btn {
@@ -297,126 +314,125 @@ tbody tr:last-child td:last-child {
   padding: 10px 18px;
   border-radius: 10px;
   border: none;
-  cursor: pointer;
-  transition: 0.25s ease-in-out;
+  color: var(--ongc-white);
   min-width: 100px;
   text-align: center;
-  color: var(--ongc-white);
 }
 
-/* --- Filter Button Variants --- */
+/* Filter Button Types */
 .filter-btn.apply,
 .filter-btn.clear {
   background-color: var(--ongc-maroon);
-  color: var(--ongc-white);
 }
 
-/* --- Export Button Variants --- */
-.export-btn.csv    { background-color: var(--ongc-green); }
-.export-btn.excel  { background-color: #28a745; }
-.export-btn.pdf    { background-color: var(--ongc-maroon); }
-.export-btn.word   { background-color: var(--ongc-orange-rust); }
-.export-btn.all    { background-color: var(--ongc-black); }
-.export-btn.preview{ background-color: #6c757d; }
+/* Export Button Types */
+.export-btn.csv     { background-color: var(--ongc-green); }
+.export-btn.excel   { background-color: #28a745; }
+.export-btn.pdf     { background-color: var(--ongc-maroon); }
+.export-btn.word    { background-color: var(--ongc-orange-rust); }
+.export-btn.all     { background-color: var(--ongc-black); }
+.export-btn.preview { background-color: #6c757d; }
 
-/* -------------------------------
-   Responsive Design for Mobile Devices
---------------------------------- */
-@media (max-width: 600px) {
-  /* Filter Section */
-  .filter-panel-row {
-    flex-direction: column;  /* Stack the filter panel vertically */
-    align-items: stretch; /* Ensure it stretches the whole width */
-  }
-
-  /* Apply and Clear Buttons */
-  .filter-btn.apply,
-  .filter-btn.clear {
-    width: 48%;
-    margin-bottom: 10px;
-  }
-
-  /* File Name Input Group */
-  .filename-group {
-    width: 100%;
-    gap: 0;
-  }
-
-  .filename-input {
-    width: 100%;
-  }
-
-  /* Export and Show/Hide buttons - 3 rows with 2 buttons each */
-  .export-btn-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: space-between;
-  }
-
-  .export-btn-group button {
-    width: 48%; /* Two buttons per row */
-    margin-bottom: 10px;
-  }
-
-  /* Ensure the last button does not have a margin */
-  .export-btn-group button:last-child {
-    margin-right: 0;
-  }
-
-  /* Table Wrapper */
-  .table-wrapper {
-    overflow-x: auto;
-  }
-
-  /* Table should be 100% of width on mobile */
-  table {
-    min-width: 600px;
-  }
+.exporting-message {
+  color: #b91c1c;
+  font-weight: bold;
+  font-size: 14px;
+  margin-top: 10px;
 }
 
 /* -------------------------------
-   Responsive Design for Tablets (601px - 900px)
+   Field Selection
 --------------------------------- */
-@media (min-width: 601px) and (max-width: 900px) {
-  /* File Name Input Group for tablet */
-  .filename-group {
-    flex-direction: row;
-    gap: 10px;
-    align-items: center;
-  }
+.field-checkbox {
+  font-weight: 400; /* Normal weight */
+}
 
-  /* Export Buttons (two per row) for tablet */
-  .export-btn-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: space-between;
-  }
+.field-selection-table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 16px;
+  margin-bottom: 20px;
+}
 
-  .export-btn-group button {
-    width: 48%;
-  }
+.field-selection-table {
+  width: auto;
+  margin: 0 auto;
+  border-collapse: separate;
+  border-spacing: 12px 10px;
+}
 
-  .export-btn-group button:last-child {
-    margin-right: 0;
-  }
+.field-selection-table td {
+  padding: 0;
+}
+
+/* Reuse your compact field checkbox styling */
+.field-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  background-color: var(--ongc-soft-bg);
+  padding: 4px 8px;
+  border: 1px solid var(--ongc-green);
+  border-radius: 6px;
+  color: var(--ongc-black);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.field-checkbox input[type="checkbox"] {
+  transform: scale(0.85);
+  accent-color: var(--ongc-green);
+}
+
+.select-button-container {
+  margin-top: 12px;
+  text-align: center;
+}
+
+.select-toggle-btn {
+  font-size: 0.8rem;
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  border: 1px solid var(--ongc-green);
+  background-color: var(--ongc-soft-bg);
+  color: var(--ongc-black);
+  cursor: pointer;
+}
+
+.deselect-state {
+  background-color: #6c757d;
+  color: #fff;
+  border-color: #6c757d;
+}
+
+.deselect-state:hover {
+  background-color: #5a6268;
+}
+
+.select-state {
+  background-color: var(--ongc-green-dark);
+  color: #fff;
+  border-color: var(--ongc-green-dark);
+}
+
+.select-state:hover {
+  background-color: var(--ongc-green);
 }
 
 
-/* Export Heading */
+
+/* -------------------------------
+   Export Heading
+--------------------------------- */
 .export-heading {
   font-family: 'Poppins', sans-serif;
   text-align: center;
   font-weight: 700;
   text-transform: uppercase;
   font-size: 1.6rem;
-  background: linear-gradient(
-    90deg,
-    var(--ongc-maroon),
-    var(--ongc-green),
-    var(--ongc-yellow)
-  );
+  background: linear-gradient(90deg, var(--ongc-maroon), var(--ongc-green), var(--ongc-yellow));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -425,80 +441,9 @@ tbody tr:last-child td:last-child {
   margin-bottom: 20px;
 }
 
-/* Field Selection Container */
-.field-selection-container {
-  margin: 20px 0;
-  text-align: center;
-}
-
-/* Field Selection */
-.field-selection {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
-/* Field Checkbox */
-.field-checkbox {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.9rem;
-  background-color: var(--ongc-soft-bg);
-  padding: 8px 12px;
-  border: 1px solid var(--ongc-green);
-  border-radius: 6px;
-  color: var(--ongc-black);
-}
-
-.field-checkbox input[type="checkbox"] {
-  margin-right: 6px;
-  transform: scale(1.1);
-  accent-color: var(--ongc-green);
-}
-
-/* Select Toggle Button States */
-.select-toggle-btn,
-.toggle-select-btn {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid var(--ongc-green);
-  background-color: var(--ongc-soft-bg);
-  color: var(--ongc-black);
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Deselect All Button Appearance */
-.deselect-state {
-  background-color: #6c757d;
-  color: #ffffff;
-  border: 1px solid #6c757d;
-}
-
-.deselect-state:hover {
-  background-color: #5a6268;
-}
-
-/* Select All Button Appearance */
-.select-state {
-  background-color: var(--ongc-green-dark); 
-  color: #fff;
-  border: 1px solid #7a1414;
-}
-
-.select-state:hover {
-  background-color: var(--ongc-green);
-}
-
-/* Preview Section */
+/* -------------------------------
+   Preview Section
+--------------------------------- */
 .preview-section {
   margin: 30px 0 24px;
   padding: 20px 24px;
@@ -523,17 +468,10 @@ tbody tr:last-child td:last-child {
   text-align: center;
 }
 
-/* Horizontal Scroll for Preview Table */
 .table-preview-container {
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-}
-
-.preview-table {
-  width: 100%;
-  min-width: 800px;
-  border-collapse: collapse;
 }
 
 .preview-table th,
@@ -548,79 +486,100 @@ tbody tr:last-child td:last-child {
   color: white;
 }
 
-/* Hide preview section when not visible */
 .preview-section.hidden,
 .field-selection-container.hidden {
   display: none;
 }
 
-/* -------------------------------
-   Responsive Design
---------------------------------- */
-@media (max-width: 600px) {
-  .field-selection {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .field-checkbox {
-    font-size: 0.8rem;
-    padding: 6px 10px;
-  }
-
-  .select-toggle-btn {
-    font-size: 0.8rem;
-    padding: 6px 10px;
-  }
-
-  .preview-section {
-    margin-top: 20px;
-    padding: 16px 20px;
-  }
-
-  .preview-table {
-    min-width: 600px;
-  }
-
-  .preview-table th,
-  .preview-table td {
-    font-size: 0.8rem;
-    padding: 6px;
-  }
+.preview-table .remarks-column {
+  width: 200px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  vertical-align: top;
+  text-align: left;
 }
 
-/* Responsive Design for smaller devices */
-@media (max-width: 600px) {
-  .leaderboard { padding-top: 60px; }
-  .ongc-logo { width: 220px; }
 
-  .filter-panel-row,
-  .export-panel-row,
-  .filter-input-group,
-  .export-btn-group,
-  .field-selection {
-    flex-direction: column;
-    align-items: stretch;
+
+/* -------------------------------
+   Responsive Media Queries
+--------------------------------- */
+@media (max-width: 600px) {
+  .leaderboard {
+    padding-top: 60px;
   }
 
+  .ongc-logo {
+    width: 220px;
+  }
+
+  /* Responsive Layout Fixes */
+  .filter-panel-row,
+  .export-panel-row,
+  .filename-group {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .filter-input-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .export-btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  /* Input fields full-width */
   .filter-input,
-  .filter-btn,
-  .export-btn,
   .filename-input {
     width: 100% !important;
     min-width: 0 !important;
     box-sizing: border-box;
   }
 
-  .filename-input {
-    height: 40px;
-    padding: 10px 12px;
-    border-radius: 10px;
+  /* Apply & Clear buttons side by side */
+  .filter-input-group .filter-btn {
+    flex: 0 0 48%;
+    max-width: 160px;
+    min-width: 120px;
+    text-align: center;
   }
 
-  .filename-group {
-    flex-direction: column;
-    align-items: stretch;
+  /* Export buttons: 2 per row */
+  .export-btn-group .export-btn {
+    flex: 0 0 48%;
+    max-width: 160px;
+    min-width: 120px;
+    text-align: center;
+  }
+
+  .toggle-select-btn {
+    width: 100%;
+    max-width: 240px;
+  }
+
+  /* Preview Table Adjustments */
+  .preview-table,
+  .table-preview table {
+    min-width: 600px;
+  }
+
+  .preview-table th,
+  .preview-table td,
+  .remarks-cell {
+    font-size: 12px;
+    padding: 6px;
+  }
+
+  .preview-section h3 {
+    font-size: 16px;
   }
 
   .pagination {
@@ -629,39 +588,11 @@ tbody tr:last-child td:last-child {
   }
 
   .pagination button {
-    padding: 8px 14px;
-    font-size: 12px;
-  }
-
-  .table-preview table {
-    min-width: 600px;
-  }
-
-  .preview-section h3 { font-size: 16px; }
-  .table-preview table th,
-  .table-preview table td {
-    font-size: 12px;
-    padding: 6px;
-  }
-
-  .remarks-cell {
-    font-size: 12px;
-    max-width: 100%;
+    padding: 6px 10px;
+    font-size: 10px;
+    min-width: 35px;
+    min-height: 35px;
   }
 }
 
-@media (min-width: 601px) and (max-width: 900px) {
-  .filter-input,
-  .filename-input {
-    min-width: 160px;
-  }
 
-  .pagination button {
-    padding: 9px 16px;
-    font-size: 13px;
-  }
-
-  .ongc-logo { width: 320px; }
-
-  .preview-section h3 { font-size: 17px; }
-}

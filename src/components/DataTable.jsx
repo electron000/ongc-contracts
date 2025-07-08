@@ -1,12 +1,49 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
-const DataTable = ({ data, headers }) => {
+const DataTable = ({ data = [], headers = [], sortConfig, setSortConfig }) => {
+  const isSortable = (field, sampleRow) => {
+    if (!sampleRow) return false;
+    const value = sampleRow[field];
+    if (field.toLowerCase().includes("date")) return true;
+    if (typeof value === "number") return true;
+    return false;
+  };
 
-  // Function to format date in yyyy-mm-dd format
+  const sortedData = useMemo(() => {
+    if (!sortConfig?.field) return data;
+    return [...data].sort((a, b) => {
+      const valA = a[sortConfig.field];
+      const valB = b[sortConfig.field];
+
+      if (valA == null) return 1;
+      if (valB == null) return -1;
+
+      const isDate = sortConfig.field.toLowerCase().includes("date");
+      const aValue = isDate ? new Date(valA) : parseFloat(valA);
+      const bValue = isDate ? new Date(valB) : parseFloat(valB);
+
+      if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [data, sortConfig]);
+
+  const toggleSort = (field) => {
+    const firstRow = data?.[0];
+    if (!isSortable(field, firstRow)) return;
+
+    if (typeof setSortConfig === "function") {
+      setSortConfig((prev) => ({
+        field,
+        direction: prev?.field === field && prev.direction === "asc" ? "desc" : "asc",
+      }));
+    }
+  };
+
   const formatDate = (date) => {
-    if (!date) return "-"; // If the date is invalid, return "-"
+    if (!date) return "-";
     const d = new Date(date);
-    return d.toLocaleDateString('en-CA'); // 'en-CA' gives yyyy-mm-dd format
+    return d.toLocaleDateString("en-CA");
   };
 
   return (
@@ -14,28 +51,53 @@ const DataTable = ({ data, headers }) => {
       <table className="min-w-full table-auto border-collapse border border-gray-200">
         <thead className="bg-gray-100">
           <tr>
-            {headers.map((h) => (
-              <th key={h} className="border px-4 py-2 text-left text-sm font-semibold">
-                {h}
-              </th>
-            ))}
+            {headers.map((h) => {
+              const isColumnSortable = data.length > 0 && isSortable(h, data[0]);
+              return (
+                <th
+                  key={h}
+                  className={`border px-4 py-2 text-left text-sm font-semibold align-top ${
+                    isColumnSortable ? "cursor-pointer select-none" : ""
+                  }`}
+                  onClick={() => toggleSort(h)}
+                >
+                  {h}
+                  {sortConfig?.field === h && (
+                    <span className="ml-1">
+                      {sortConfig.direction === "asc" ? "▲" : "▼"}
+                    </span>
+                  )}
+                </th>
+              );
+            })}
           </tr>
         </thead>
         <tbody>
-          {data.length === 0 ? (
+          {sortedData.length === 0 ? (
             <tr>
               <td colSpan={headers.length} className="text-center py-4">
                 No data found
               </td>
             </tr>
           ) : (
-            data.map((row, i) => (
+            sortedData.map((row, i) => (
               <tr key={i} className="odd:bg-white even:bg-gray-50">
                 {headers.map((h) => (
-                  <td key={h} className="border px-4 py-2 text-sm">
-                    {typeof row[h] === 'number'
-                      ? row[h].toLocaleString() // For number formatting
-                      : (h.includes("Date") ? formatDate(row[h]) : (row[h] || "-"))} {/* Format date columns */}
+                  <td
+                    key={h}
+                    className={
+                      h.toLowerCase().includes("remark")
+                        ? "remarks-column"
+                        : `border px-4 py-2 text-sm ${
+                            typeof row[h] === "number" ? "text-right" : "text-left"
+                          }`
+                    }
+                  >
+                    {typeof row[h] === "number"
+                      ? row[h].toLocaleString()
+                      : h.toLowerCase().includes("date")
+                      ? formatDate(row[h])
+                      : row[h] || "-"}
                   </td>
                 ))}
               </tr>

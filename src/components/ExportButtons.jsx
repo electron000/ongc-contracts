@@ -9,6 +9,7 @@ const ExportButtons = ({ data, headers, showPreview, setShowPreview }) => {
   const [selectedFields, setSelectedFields] = useState(headers);
   const [sortConfig, setSortConfig] = useState({ field: null, direction: 'asc' });
   const [fileName, setFileName] = useState("Contracts Details");
+  const [isExporting, setIsExporting] = useState(false); // 🔥 Export loading state
 
   const handleFieldChange = (field) => {
     setSelectedFields(prev =>
@@ -42,58 +43,70 @@ const ExportButtons = ({ data, headers, showPreview, setShowPreview }) => {
   };
 
   const exportToCSV = () => {
-    const sorted = getSortedData();
-    const csvContent = [selectedFields.join(",")].concat(
-      sorted.map(row =>
-        selectedFields.map(h => `"${(row[h] || '').toString().replace(/"/g, '""')}"`).join(",")
-      )
-    );
-    const blob = new Blob([csvContent.join("\n")], { type: "text/csv;charset=utf-8;" });
-    saveAs(blob, `${fileName}.csv`);
+    setIsExporting(true);
+    try {
+      const sorted = getSortedData();
+      const csvContent = [selectedFields.join(",")].concat(
+        sorted.map(row =>
+          selectedFields.map(h => `"${(row[h] || '').toString().replace(/"/g, '""')}"`).join(",")
+        )
+      );
+      const blob = new Blob([csvContent.join("\n")], { type: "text/csv;charset=utf-8;" });
+      saveAs(blob, `${fileName}.csv`);
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const exportToExcel = async () => {
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Contracts Details");
-    worksheet.addRow(selectedFields);
+    setIsExporting(true);
+    try {
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Contracts Details");
+      worksheet.addRow(selectedFields);
 
-    const sortedData = getSortedData();
-    sortedData.forEach(row => worksheet.addRow(selectedFields.map(h => row[h] || "")));
+      const sortedData = getSortedData();
+      sortedData.forEach(row => worksheet.addRow(selectedFields.map(h => row[h] || "")));
 
-    worksheet.columns = selectedFields.map(h => {
-      const max = Math.max(h.length, ...sortedData.map(r => (r[h] || '').toString().length));
-      return { width: Math.min(50, max * 0.8 + 2) };
-    });
+      worksheet.columns = selectedFields.map(h => {
+        const max = Math.max(h.length, ...sortedData.map(r => (r[h] || '').toString().length));
+        return { width: Math.min(50, max * 0.8 + 2) };
+      });
 
-    worksheet.getRow(1).eachCell(cell => cell.font = { bold: true });
+      worksheet.getRow(1).eachCell(cell => cell.font = { bold: true });
 
-    const buffer = await workbook.xlsx.writeBuffer();
-    saveAs(new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }), `${fileName}.xlsx`);
+      const buffer = await workbook.xlsx.writeBuffer();
+      saveAs(new Blob([buffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      }), `${fileName}.xlsx`);
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const exportToPDF = () => {
-    const selectedData = getSortedData();
-    const numCols = selectedFields.length;
-
-    let format = 'a4';
-    if (numCols > 10) format = 'a3';
-
-    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format });
-    const maxColsAllowed = 30;
-    const scale = Math.max(0.4, 1 - (numCols / maxColsAllowed));
-
-    const fontSize = 10 * scale;
-    const titleSize = 16 * scale;
-    const cellPadding = 2 * scale;
-
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(titleSize);
-    doc.text(fileName.replace(/_/g, ' '), 14, 14);
-
+    setIsExporting(true);
     try {
+      const selectedData = getSortedData();
+      const numCols = selectedFields.length;
+      let format = 'a4';
+      if (numCols > 10) format = 'a3';
+
+      const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format });
+      const maxColsAllowed = 30;
+      const scale = Math.max(0.4, 1 - (numCols / maxColsAllowed));
+
+      const fontSize = 10 * scale;
+      const titleSize = 16 * scale;
+      const cellPadding = 2 * scale;
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(titleSize);
+      doc.text(fileName.replace(/_/g, ' '), 14, 14);
+
       autoTable(doc, {
         startY: 20,
-        head: [selectedFields],
+        head: [selectedFields.map(h => h.replace(/\s*\(₹\)/, ' (INR)'))],
         body: selectedData.map(row =>
           selectedFields.map(h => row[h]?.toString() || "")
         ),
@@ -133,148 +146,192 @@ const ExportButtons = ({ data, headers, showPreview, setShowPreview }) => {
     } catch (error) {
       console.error("PDF Export Error:", error);
       alert("Export failed. Try reducing the number of selected fields.");
+    } finally {
+      setIsExporting(false);
     }
   };
 
   const exportToDocx = async () => {
-    const sortedData = getSortedData();
-    const colWidths = selectedFields.map(h => {
-      const maxLength = Math.max(h.length, ...sortedData.map(r => (r[h] || '').toString().length));
-      return Math.min(8000, Math.max(1500, 6000 / selectedFields.length + maxLength * 100));
-    });
+    setIsExporting(true);
+    try {
+      const sortedData = getSortedData();
+      const colWidths = selectedFields.map(h => {
+        const maxLength = Math.max(h.length, ...sortedData.map(r => (r[h] || '').toString().length));
+        return Math.min(8000, Math.max(1500, 6000 / selectedFields.length + maxLength * 100));
+      });
 
-    const headerRow = new TableRow({
-      children: selectedFields.map((h, i) =>
-        new TableCell({
-          width: { size: colWidths[i], type: WidthType.DXA },
-          children: [new Paragraph(h)]
-        })
-      )
-    });
-
-    const dataRows = sortedData.map(row =>
-      new TableRow({
+      const headerRow = new TableRow({
         children: selectedFields.map((h, i) =>
           new TableCell({
             width: { size: colWidths[i], type: WidthType.DXA },
-            children: [new Paragraph(row[h]?.toString() || "")]
+            children: [new Paragraph(h)]
           })
         )
-      })
-    );
+      });
 
-    const doc = new Document({
-      sections: [{
-        children: [
-          new Paragraph({ text: fileName.replace(/_/g, ' '), heading: "Heading1" }),
-          new Table({ rows: [headerRow, ...dataRows] })
-        ]
-      }]
-    });
+      const dataRows = sortedData.map(row =>
+        new TableRow({
+          children: selectedFields.map((h, i) =>
+            new TableCell({
+              width: { size: colWidths[i], type: WidthType.DXA },
+              children: [new Paragraph(row[h]?.toString() || "")]
+            })
+          )
+        })
+      );
 
-    const blob = await Packer.toBlob(doc);
-    saveAs(blob, `${fileName}.docx`);
+      const doc = new Document({
+        sections: [{
+          children: [
+            new Paragraph({ text: fileName.replace(/_/g, ' '), heading: "Heading1" }),
+            new Table({ rows: [headerRow, ...dataRows] })
+          ]
+        }]
+      });
+
+      const blob = await Packer.toBlob(doc);
+      saveAs(blob, `${fileName}.docx`);
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const exportAllFormats = async () => {
-    await exportToCSV();
-    await exportToExcel();
-    await exportToPDF();
-    await exportToDocx();
+    setIsExporting(true);
+    try {
+      await exportToCSV();
+      await exportToExcel();
+      await exportToPDF();
+      await exportToDocx();
+    } finally {
+      setIsExporting(false);
+    }
   };
 
-return (
-  <div>
-    <div className="export-panel-row">
-      <div className="filename-group">
-        <label htmlFor="filename" className="font-semibold mr-2">File Name:</label>
-        <input
-          id="filename"
-          type="text"
-          value={fileName}
-          onChange={(e) => setFileName(e.target.value)}
-          className="filename-input"
-          placeholder="Enter file name"
-        />
-      </div>
-
-      <div className="export-btn-group">
-        <button onClick={exportToCSV} className="export-btn csv">Export CSV</button>
-        <button onClick={exportToExcel} className="export-btn excel">Export Excel</button>
-        <button onClick={exportToPDF} className="export-btn pdf">Export PDF</button>
-        <button onClick={exportToDocx} className="export-btn word">Export Word</button>
-        <button onClick={exportAllFormats} className="export-btn all">Export All Formats</button>
-        <button onClick={() => setShowPreview(!showPreview)} className="export-btn preview">
-          {showPreview ? "Hide Preview" : "Show Preview"}
-        </button>
-      </div>
-    </div>
-
-    {/* Show the "CHOOSE FIELDS TO EXPORT" heading and the field selection toggle inside preview toggle */}
-    {showPreview && (
-      <div className="field-selection-container">
-        <div className="export-heading-container">
-          <h3 className="export-heading">CHOOSE FIELDS TO EXPORT</h3>
+  return (
+    <div>
+      <div className="export-panel-row">
+        <div className="filename-group">
+          <label htmlFor="filename" className="font-semibold mr-2">File Name:</label>
+          <input
+            id="filename"
+            type="text"
+            value={fileName}
+            onChange={(e) => setFileName(e.target.value)}
+            className="filename-input"
+            placeholder="Enter file name"
+          />
         </div>
 
-        {/* Field Selection */}
-        <div className="field-selection">
-          {headers.map((field) => (
-            <label key={field} className="field-checkbox">
-              <input
-                type="checkbox"
-                checked={selectedFields.includes(field)}
-                onChange={() => handleFieldChange(field)}
-              />
-              {field}
-            </label>
-          ))}
-          <button
-            onClick={toggleAllFields}
-            className={`toggle-select-btn ${selectedFields.length === headers.length ? "deselect-state" : "select-state"}`}
-          >
-            {selectedFields.length === headers.length ? "Deselect All" : "Select All"}
+        <div className="export-btn-group">
+          <button onClick={exportToCSV} className="export-btn csv" disabled={isExporting}>CSV</button>
+          <button onClick={exportToExcel} className="export-btn excel" disabled={isExporting}>Excel</button>
+          <button onClick={exportToPDF} className="export-btn pdf" disabled={isExporting}>PDF</button>
+          <button onClick={exportToDocx} className="export-btn word" disabled={isExporting}>Word</button>
+          <button onClick={exportAllFormats} className="export-btn all" disabled={isExporting}>Export All</button>
+          <button onClick={() => setShowPreview(!showPreview)} className="export-btn preview">
+            {showPreview ? "Hide Preview" : "Show Preview"}
           </button>
         </div>
       </div>
-    )}
 
-    {/* Preview Section */}
-{/* Preview Section */}
-{showPreview && (
-  <div className="preview-section">
-    <div className="table-preview-container">
-      <table className="preview-table">
-        <thead>
-          <tr>
-            {selectedFields.map((field) => (
-              <th key={field} onClick={() => toggleSort(field)} className="table-header-cell">
-                {field} {sortConfig.field === field ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
-              </th>
-            ))}
-          </tr>
-        </thead>
+      {isExporting && (
+        <p className="exporting-message">Exporting file(s)... Please wait.</p>
+      )}
+
+      {showPreview && (
+  <div className="field-selection-container">
+    <div className="export-heading-container">
+      <h3 className="export-heading">CHOOSE FIELDS</h3>
+    </div>
+
+    <div className="field-selection-table-container">
+      <table className="field-selection-table">
         <tbody>
-          {getSortedData().slice(0, 10).map((row, index) => (
-            <tr key={index}>
-              {selectedFields.map((field) => (
-                <td key={field} className="table-cell">
-                  {row[field]}
+          {Array.from({ length: 5 }).map((_, rowIndex) => (
+            <tr key={rowIndex}>
+              {headers.slice(rowIndex * 5, rowIndex * 5 + 5).map((field) => (
+                <td key={field}>
+                  <label className="field-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={selectedFields.includes(field)}
+                      onChange={() => handleFieldChange(field)}
+                    />
+                    {field}
+                  </label>
                 </td>
               ))}
             </tr>
           ))}
         </tbody>
       </table>
-      <p className="preview-note">* Preview limited to first 10 rows</p>
+    </div>
+
+    <div className="select-button-container">
+      <button
+        onClick={toggleAllFields}
+        className={`select-toggle-btn ${
+          selectedFields.length === headers.length ? "deselect-state" : "select-state"
+        }`}
+      >
+        {selectedFields.length === headers.length ? "Deselect All" : "Select All"}
+      </button>
     </div>
   </div>
 )}
 
+
+      {showPreview && (
+        <div className="preview-section">
+    <div className="table-preview-container">
+      <table className="preview-table">
+        <thead>
+          <tr>
+            {selectedFields.map((field) => (
+              <th
+                key={field}
+                onClick={() => toggleSort(field)}
+                className="table-header-cell"
+              >
+                {field}{" "}
+                {sortConfig.field === field
+                  ? sortConfig.direction === "asc"
+                    ? "▲"
+                    : "▼"
+                  : ""}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {getSortedData()
+            .slice(0, 10)
+            .map((row, index) => (
+              <tr key={index}>
+                {selectedFields.map((field) => (
+                  <td
+                    key={field}
+                    className={`table-cell ${
+                      field.toLowerCase().includes("remark")
+                        ? "remarks-column"
+                        : ""
+                    }`}
+                  >
+                    {row[field]}
+                  </td>
+                ))}
+              </tr>
+            ))}
+        </tbody>
+      </table>
+      <p className="preview-note">* Preview limited to first 10 rows</p>
+    </div>
   </div>
-);
-
-
+      )}
+    </div>
+  );
 };
 
 export default ExportButtons;
+

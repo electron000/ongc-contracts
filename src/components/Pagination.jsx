@@ -17,7 +17,7 @@ const Pagination = ({ currentPage, setPage, totalPages, rowsPerPage, currentData
         className="PNpage"
         aria-label="Previous Page"
       >
-        ◀ PREV
+        ◀
       </button>
 
       {/* First Page */}
@@ -76,9 +76,11 @@ const Pagination = ({ currentPage, setPage, totalPages, rowsPerPage, currentData
         className="PNpage"
         aria-label="Next Page"
       >
-        NEXT ▶
+      ▶
       </button>
     </div>
+
+    
   );
 };
 
