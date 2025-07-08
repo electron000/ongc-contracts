@@ -348,6 +348,12 @@ button:focus,
 }
 
 
+.field-selection-table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 16px;
+  margin-bottom: 20px;
+}
 .field-selection-table {
   width: auto;
   margin: 0 auto;
