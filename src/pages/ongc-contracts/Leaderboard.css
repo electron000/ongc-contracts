@@ -329,9 +329,9 @@ button:focus,
 .export-btn.csv     { background-color: var(--ongc-green); }
 .export-btn.excel   { background-color: #28a745; }
 .export-btn.pdf     { background-color: var(--ongc-maroon); }
-.export-btn.word    { background-color: var(--ongc-orange-rust); }
+.export-btn.word    { background-color: #2563EB; }
 .export-btn.all     { background-color: var(--ongc-black); }
-.export-btn.preview { background-color: #6c757d; }
+.export-btn.preview { background-color: var(--ongc-orange-rust); }
 
 .exporting-message {
   color: #b91c1c;
@@ -347,12 +347,6 @@ button:focus,
   font-weight: 400; /* Normal weight */
 }
 
-.field-selection-table-container {
-  width: 100%;
-  overflow-x: auto;
-  margin-top: 16px;
-  margin-bottom: 20px;
-}
 
 .field-selection-table {
   width: auto;
@@ -373,8 +367,8 @@ button:focus,
   font-size: 0.75rem;
   background-color: var(--ongc-soft-bg);
   padding: 4px 8px;
-  border: 1px solid var(--ongc-green);
-  border-radius: 6px;
+  border: 1.5px solid var(--ongc-green);
+  border-radius: 10px;
   color: var(--ongc-black);
   white-space: nowrap;
   cursor: pointer;
@@ -393,7 +387,7 @@ button:focus,
 .select-toggle-btn {
   font-size: 0.8rem;
   padding: 6px 16px;
-  border-radius: 6px;
+  border-radius: 10px;
   font-weight: 600;
   border: 1px solid var(--ongc-green);
   background-color: var(--ongc-soft-bg);
@@ -500,98 +494,107 @@ button:focus,
   text-align: left;
 }
 
-
-
 /* -------------------------------
    Responsive Media Queries
 --------------------------------- */
 @media (max-width: 600px) {
-  .leaderboard {
-    padding-top: 60px;
+  .leaderboard-container {
+    padding: 40px 10px 20px;
+    overflow-x: auto;
   }
 
   .ongc-logo {
-    width: 220px;
+    width: 180px;
+    margin-bottom: 20px;
   }
 
-  /* Responsive Layout Fixes */
+  /* Flex Containers to Column Layout */
   .filter-panel-row,
   .export-panel-row,
   .filename-group {
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
+    gap: 10px;
   }
 
-  .filter-input-group {
+  /* Input and Button Groups */
+  .filter-input-group,
+  .export-btn-group {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 10px;
   }
 
-  .export-btn-group {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 12px;
-  }
-
-  /* Input fields full-width */
+  /* Input Fields */
   .filter-input,
-  .filename-input {
+  .filename-input,
+  .toggle-select-btn {
     width: 100% !important;
-    min-width: 0 !important;
+    max-width: 100%;
+    min-width: 0;
     box-sizing: border-box;
   }
 
-  /* Apply & Clear buttons side by side */
+  /* Filter Buttons (Apply / Clear) */
   .filter-input-group .filter-btn {
-    flex: 0 0 48%;
+    flex: 1 1 45%;
     max-width: 160px;
-    min-width: 120px;
+    min-width: 100px;
     text-align: center;
   }
 
-  /* Export buttons: 2 per row */
+  /* Export Buttons */
   .export-btn-group .export-btn {
-    flex: 0 0 48%;
+    flex: 1 1 45%;
     max-width: 160px;
-    min-width: 120px;
+    min-width: 100px;
     text-align: center;
   }
 
-  .toggle-select-btn {
-    width: 100%;
-    max-width: 240px;
-  }
-
-  /* Preview Table Adjustments */
+  /* Table Responsiveness */
   .preview-table,
   .table-preview table {
-    min-width: 600px;
+    min-width: 550px;
+    font-size: 12px;
   }
 
   .preview-table th,
   .preview-table td,
   .remarks-cell {
-    font-size: 12px;
-    padding: 6px;
+    font-size: 11px;
+    padding: 4px;
+    word-break: break-word;
   }
 
+  /* Preview Section Headings */
   .preview-section h3 {
     font-size: 16px;
+    text-align: center;
   }
 
+  /* Pagination Controls */
   .pagination {
-    margin: 30px 0 40px;
+    margin: 20px 0;
+    justify-content: center;
+    flex-wrap: wrap;
     gap: 6px;
   }
 
   .pagination button {
     padding: 6px 10px;
-    font-size: 10px;
+    font-size: 12px;
     min-width: 35px;
     min-height: 35px;
+  }
+
+  /* Loader & Errors */
+  .loader,
+  .error-message,
+  .no-results {
+    font-size: 14px;
+    padding: 12px;
+    text-align: center;
   }
 }
 

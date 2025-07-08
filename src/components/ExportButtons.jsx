@@ -228,9 +228,9 @@ const ExportButtons = ({ data, headers, showPreview, setShowPreview }) => {
           <button onClick={exportToExcel} className="export-btn excel" disabled={isExporting}>Excel</button>
           <button onClick={exportToPDF} className="export-btn pdf" disabled={isExporting}>PDF</button>
           <button onClick={exportToDocx} className="export-btn word" disabled={isExporting}>Word</button>
-          <button onClick={exportAllFormats} className="export-btn all" disabled={isExporting}>Export All</button>
+          <button onClick={exportAllFormats} className="export-btn all" disabled={isExporting}>All</button>
           <button onClick={() => setShowPreview(!showPreview)} className="export-btn preview">
-            {showPreview ? "Hide Preview" : "Show Preview"}
+            {showPreview ? "Hide" : "Preview"}
           </button>
         </div>
       </div>
@@ -275,7 +275,7 @@ const ExportButtons = ({ data, headers, showPreview, setShowPreview }) => {
           selectedFields.length === headers.length ? "deselect-state" : "select-state"
         }`}
       >
-        {selectedFields.length === headers.length ? "Deselect All" : "Select All"}
+        {selectedFields.length === headers.length ? "Deselect" : "Select"}
       </button>
     </div>
   </div>
