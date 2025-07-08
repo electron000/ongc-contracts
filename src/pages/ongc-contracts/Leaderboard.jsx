@@ -121,18 +121,7 @@ const generateDummyData = () => {
   
 };
 
- useEffect(() => {
-    try {
-      const dummyData = generateDummyData();
-      setOriginalData(dummyData);
-      setCurrentData(dummyData);
-    } catch (error) {
-      setError("Error loading data. Please try again later.");
-      console.error("Error loading data:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+
 
 
 const Leaderboard = () => {
@@ -149,7 +138,18 @@ const Leaderboard = () => {
   const rowsPerPage = 15;
   const [sortConfig, setSortConfig] = useState({ field: null, direction: 'asc' });
 
-
+ useEffect(() => {
+    try {
+      const dummyData = generateDummyData();
+      setOriginalData(dummyData);
+      setCurrentData(dummyData);
+    } catch (error) {
+      setError("Error loading data. Please try again later.");
+      console.error("Error loading data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
 const handleFilterApply = () => {
   let filtered = [...originalData];  // Start with original data for filtering
